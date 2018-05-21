@@ -2,12 +2,10 @@ import React, {Fragment} from 'react';
 import Button from '../../UI/Button/Button';
 
 const buildOrderSummary = props => {
-    console.log(props.state);
 
     return Object.keys(props.state.ingredients).map((key, i) => (
         <li key={key + i}>
-            <span style={{textTransform: 'uppercase'}}>{key}</span> :{' '}
-            {props.state.ingredients[key]}
+            <span style={{textTransform: 'uppercase'}}>{key}</span> : {props.state.ingredients[key]}
         </li>
     ));
 };
@@ -21,10 +19,9 @@ const orderSummary = props => (
         </p>
         <p> Continue your purchase ?</p>
         <Button btnType={'Danger'} clicked={props.cancelOrder}>
-            {' '}
-            Cancel{' '}
+            Cancel
         </Button>
-        <Button btnType={'Success'} clicked={() => alert('continue !!')}>
+        <Button btnType={'Success'} clicked={props.purchaseOrder}>
             Continue
         </Button>
     </Fragment>

@@ -5,7 +5,6 @@ import BuildControl from './BuildControl/BuildControl';
 
 const controls = [
     {label: 'Salad', type: ing.SALAD},
-    {label: 'Bacon', type: ing.BACON},
     {label: 'Cheese', type: ing.CHEESE},
     {label: 'Meat', type: ing.MEAT}
 ];
@@ -13,8 +12,7 @@ const controls = [
 const buildControls = props => (
     <div className={classes.BuildControls}>
         <p>
-            {' '}
-            Current Price: <strong> {props.totalPrice.toFixed(2)}</strong>{' '}
+            Current Price: <strong> {props.totalPrice.toFixed(2)}</strong>
         </p>
         {controls.map(c => (
             <BuildControl {...props} key={c.label} type={c.type} label={c.label}/>
@@ -24,7 +22,7 @@ const buildControls = props => (
             disabled={props.purchaseable === false}
             onClick={props.showOrderSummary}
         >
-            Order NOW{' '}
+            Order NOW
         </button>
     </div>
 );
