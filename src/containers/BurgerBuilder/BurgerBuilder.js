@@ -27,6 +27,7 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props);
     const ingredientsPromise = axios.get(
       'https://my-burger-cf562.firebaseio.com/ingredients.json'
     );
@@ -93,43 +94,17 @@ class BurgerBuilder extends Component {
   };
 
   pruchaseOrderHandler = () => {
-    //alert('purchase order ...');
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.price,
-      customer: {
-        name: 'bou me3za',
-        address: {
-          street: 'malek el me3za',
-          zipCode: '3434',
-          country: 'zuetres'
-        },
-        email: 'ma3eeyha@meza.sh'
-      },
-      deliveryMethod: 'mde'
-    };
-    this.setState(() => ({ loading: true }));
-    axios
-      .post('/orders.json', order)
-      .then(response => {
-        if (response.status !== 404) {
-          this.setState(prevState => ({
-            loading: false,
-            showModal: !prevState.showModal
-          }));
-        } else {
-          this.setState(prevState => ({
-            loading: false,
-            showModal: !prevState.showModal
-          }));
-        }
-      })
-      .catch(e => {
-        this.setState(prevState => ({
-          loading: false,
-          showModal: !prevState.showModal
-        }));
-      });
+    // alert('purchase order ...')
+    const checkoutParams = [];
+    for (let key in this.state.ingredients) {
+      const param =
+        encodeURIComponent(key) +
+        '=' +
+        encodeURIComponent(this.state.ingredients[key]);
+      checkoutParams.push(param);
+    }
+    checkoutParams.push('price=' + this.state.totalPrice);
+    this.props.history.push('/checkout?' + checkoutParams.join('&'));
   };
 
   render() {
