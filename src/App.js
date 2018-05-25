@@ -4,6 +4,7 @@ import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import { Route, Switch } from 'react-router-dom';
 import Checkout from './containers/Checkout/Checkout';
 import Orders from './containers/Orders/Orders';
+import ContactDataFormik from './containers/Checkout/ContactData/ContactDataFormik';
 
 class App extends Component {
   render() {
@@ -13,6 +14,7 @@ class App extends Component {
           <Switch>
             <Route path="/checkout" component={Checkout} />
             <Route path="/orders" component={Orders} />
+            <Route path="/formik" component={ContactDataFormik} />
             <Route path="/" exact component={BurgerBuilder} />
           </Switch>
         </Layout>
