@@ -1,5 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, {Component, Fragment} from 'react';
 
+import {connect} from 'react-redux';
 import Burger from '../../components/Burger/Burger';
 import BuilderControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
@@ -9,149 +10,64 @@ import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../components/withErrorHandler/withErrorHandler';
 
-const PRICE_INGREDIENTS = {
-  salad: 0.7,
-  bacon: 0.5,
-  cheese: 0.5,
-  meat: 1.5
-};
+import {burgerActions} from '../../actions';
+
 
 class BurgerBuilder extends Component {
-  state = {
-    ingredients: null,
-    totalPrice: 4,
-    purchaseable: false,
-    showModal: false,
-    loading: false,
-    errorLoading: false
-  };
-
-  componentDidMount() {
-    console.log(this.props);
-    const ingredientsPromise = axios.get(
-      'https://my-burger-cf562.firebaseio.com/ingredients.json'
-    );
-
-    ingredientsPromise
-      .then(res => {
-        if (res.status !== 404) {
-          this.setState(() => ({ ingredients: res.data }));
-        } else {
-          console.log('Error loading ingredients ...');
-          this.setState(() => ({ errorLoading: true }));
-        }
-      })
-      .catch(e => {
-        console.log('Error loading ingredients ...');
-        this.setState(() => ({ errorLoading: true }));
-      });
-  }
-
-  checkPurchaseable = ingredients => {
-    let isPurchaseable = false;
-    for (let key in ingredients) {
-      if (ingredients[key] > 0) {
-        isPurchaseable = true;
-      }
-    }
-    this.setState(() => ({
-      purchaseable: isPurchaseable
-    }));
-  };
-  addIngredientHandler = type => {
-    const oldCount = this.state.ingredients[type];
-    const newCount = oldCount + 1;
-    const updatedIngredient = {
-      ...this.state.ingredients
+    state = {
+        showModal: false
     };
-    updatedIngredient[type] = newCount;
-    this.setState(prevState => ({
-      ingredients: { ...prevState.ingredients, ...updatedIngredient },
-      totalPrice: prevState.totalPrice + PRICE_INGREDIENTS[type]
-    }));
-    this.checkPurchaseable(updatedIngredient);
-  };
 
-  lessIngredientHandler = type => {
-    const oldCount = this.state.ingredients[type];
-    const newCount = oldCount - 1;
-    if (newCount >= 0) {
-      const updatedIngredient = {
-        ...this.state.ingredients
-      };
-      updatedIngredient[type] = newCount;
-      this.setState(prevState => ({
-        ingredients: { ...prevState.ingredients, ...updatedIngredient },
-        totalPrice: prevState.totalPrice - PRICE_INGREDIENTS[type]
-      }));
-      this.checkPurchaseable(updatedIngredient);
-    }
-  };
-  showOrderSummaryHandler = () => {
-    this.setState(prevState => ({
-      showModal: !prevState.showModal
-    }));
-  };
-
-  pruchaseOrderHandler = () => {
-    // alert('purchase order ...')
-    const checkoutParams = [];
-    for (let key in this.state.ingredients) {
-      const param =
-        encodeURIComponent(key) +
-        '=' +
-        encodeURIComponent(this.state.ingredients[key]);
-      checkoutParams.push(param);
-    }
-    checkoutParams.push('price=' + this.state.totalPrice);
-    this.props.history.push('/checkout?' + checkoutParams.join('&'));
-  };
-
-  render() {
-    let orderSummary = (
-      <OrderSummary
-        state={this.state}
-        cancelOrder={this.showOrderSummaryHandler}
-        purchaseOrder={this.pruchaseOrderHandler}
-      />
-    );
-    let burger = (
-      <Fragment>
-        <Burger ingredients={this.state.ingredients} />
-        <BuilderControls
-          addIngredient={this.addIngredientHandler}
-          lessIngredient={this.lessIngredientHandler}
-          ingredients={this.state.ingredients}
-          totalPrice={this.state.totalPrice}
-          purchaseable={this.state.purchaseable}
-          showOrderSummary={this.showOrderSummaryHandler}
-        />
-      </Fragment>
-    );
-
-    if (!this.state.ingredients) {
-      orderSummary = <Spinner />;
-      burger = <Spinner />;
-    } else if (this.state.loading) {
-      orderSummary = <Spinner />;
+    componentDidMount() {
+       if( !this.props.burger.ingredients) {
+           this.props.loadInitialIngredients();
+       }
     }
 
-    if (this.state.errorLoading) {
-      burger = <p>Error while loading the ingredients ...</p>;
+    showHideOrderSummaryHandler = () => {
+        this.setState((prevState) => ({showModal: !prevState.showModal}));
     }
 
-    return (
-      <Fragment>
-        <Modal
-          show={this.state.showModal}
-          hideBackdrop={this.showOrderSummaryHandler}
-        >
-          {orderSummary}
-        </Modal>
-        {burger}
-      </Fragment>
-    );
-  }
+    render() {
+        console.log(this.props);
+        let orderSummary = (
+            <OrderSummary
+                cancelOrder={this.showHideOrderSummaryHandler}
+                purchaseOrder={ () =>this.props.history.push('/checkout')}
+            />
+        );
+        let burger = (
+            <Fragment>
+                <Burger ingredients={this.props.burger.ingredients}/>
+                <BuilderControls
+                    showOrderSummary={this.showHideOrderSummaryHandler}
+                />
+            </Fragment>
+        );
+
+        if (!this.props.burger.ingredients && ! this.props.burger.error) {
+            orderSummary = <Spinner/>;
+            burger = <Spinner/>;
+        }else if(this.props.burger.error){
+            console.error(this.props.burger.error);
+            orderSummary= null;
+            burger= null;
+        }
+
+        return (
+            <Fragment>
+                <Modal
+                    show={this.state.showModal}
+                    hideBackdrop={this.showHideOrderSummaryHandler}
+                >
+                    {orderSummary}
+                </Modal>
+                {burger}
+            </Fragment>
+        );
+    }
 }
 
-export default withErrorHandler(BurgerBuilder, axios);
+const mapStateToProps = (state) => state;
+
+export default connect(mapStateToProps, {...burgerActions})(withErrorHandler(BurgerBuilder, axios));

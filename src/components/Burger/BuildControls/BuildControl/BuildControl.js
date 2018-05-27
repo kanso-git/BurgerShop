@@ -6,8 +6,8 @@ const buildControl = props => (
         <div className={classes.Label}>{props.label}</div>
         <button
             className={classes.Less}
-            onClick={() => props.lessIngredient(props.type)}
-            disabled={props.ingredients[props.type] === 0}
+            onClick={() => props.removeIngredient(props.type)}
+            disabled={props.burger.ingredients[props.type] === 0}
         >
             -
         </button>

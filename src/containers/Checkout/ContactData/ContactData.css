@@ -10,6 +10,41 @@
 
 .Input {
   display: block;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.Label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.ContcatData input, .ContcatData select {
+  outline: none;
+  border: 1px solid #ccc;
+  background-color: white;
+  font: inherit;
+  padding: 6px 10px;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.ContcatData input:focus {
+  outline: none;
+  background-color: #ccc;
+}
+
+.ContcatData input.Invalid {
+  border: 1px solid red;
+  background-color: rgba(255, 140, 140, 0.42);
+}
+
+.ValidationError {
+  color: red;
+  margin: 5px 0;
 }
 
 @media (min-width: 600px) {
