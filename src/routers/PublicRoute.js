@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
+import Layout from "../components/Layout/Layout";
 
 export const PublicRoute = ({
   isAuthenticated,
@@ -9,8 +10,11 @@ export const PublicRoute = ({
 }) => (
   <Route
     {...rest}
-    component={props =>
-      isAuthenticated ? <Redirect to="/" /> : <Component {...props} />
+    component={props =>{
+        const C = isAuthenticated ?<Layout> <Redirect to="/" /></Layout> : <Component {...props} />
+        return C
+    }
+
     }
   />
 );
