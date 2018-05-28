@@ -4,20 +4,17 @@ import { object, string } from 'yup';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import classes from './ContactData.css';
-import { orderActions } from '../../../actions';
-
-const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  formControl: {
-    margin: theme.spacing.unit
-  }
-});
+import { orderActions } from '../../../store/actions';
+import withErrorHandler from '../../../components/withErrorHandler/withErrorHandler';
+import axios from '../../../axios-orders';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import { Redirect } from 'react-router-dom';
 
 class ContactData extends Component {
   render() {
+    if (!this.props.order.ongoingPruchase) {
+      return <Redirect to="/" />;
+    }
     console.log(`render fn :
         ${JSON.stringify(this.props, null, 3)}`);
     const { values, errors, touched, isSubmitting, isValid } = this.props;
@@ -69,6 +66,7 @@ class ContactData extends Component {
           <Button
             variant="raised"
             color="primary"
+            type="submit"
             disabled={isSubmitting || !isValid}
           >
             Order
@@ -103,8 +101,8 @@ const FormikForm = withFormik({
         burger: props.burger,
         customer: { ...values }
       };
+      // initiate the purchase process
       props.placeOrder(orderData);
-      resetForm();
     }
     setSubmitting(false);
   },
@@ -125,4 +123,6 @@ const FormikForm = withFormik({
 ContactData.propTypes = {};
 
 const mapStateToProps = state => state;
-export default connect(mapStateToProps, { ...orderActions })(FormikForm);
+export default connect(mapStateToProps, { ...orderActions })(
+  withErrorHandler(FormikForm, axios)
+);

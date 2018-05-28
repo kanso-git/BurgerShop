@@ -1,27 +1,17 @@
-import React, {Component} from 'react';
-
+import React, { Component } from 'react';
 import Layout from './components/Layout/Layout';
-import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
-import {Route, Switch} from 'react-router-dom';
-import Checkout from './containers/Checkout/Checkout';
-import Orders from './containers/Orders/Orders';
-import ContactDataFormik from './containers/Checkout/ContactData/ContactDataFormik';
+import AppRouter from './routers/AppRouter';
 
 class App extends Component {
-    render() {
-        return (
-            <div>
-                <Layout>
-                    <Switch>
-                        <Route path="/checkout" component={Checkout}/>
-                        <Route path="/orders" component={Orders}/>
-                        <Route path="/formik" component={ContactDataFormik}/>
-                        <Route path="/" exact component={BurgerBuilder}/>
-                    </Switch>
-                </Layout>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <Layout>
+          <AppRouter />
+        </Layout>
+      </div>
+    );
+  }
 }
 
 export default App;

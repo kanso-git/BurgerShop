@@ -32,7 +32,7 @@ const Order = props => {
 
       <p>
         <span>
-          <strong>Price: ${props.price}</strong>
+          <strong>Price: ${props.totalPrice}</strong>
         </span>
       </p>
     </div>
