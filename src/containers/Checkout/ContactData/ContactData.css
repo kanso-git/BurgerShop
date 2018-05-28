@@ -21,7 +21,8 @@
   margin-bottom: 8px;
 }
 
-.ContcatData input, .ContcatData select {
+.ContcatData input,
+.ContcatData select {
   outline: none;
   border: 1px solid #ccc;
   background-color: white;
@@ -45,6 +46,10 @@
 .ValidationError {
   color: red;
   margin: 5px 0;
+}
+
+.GroupControl {
+  margin: 10px 0;
 }
 
 @media (min-width: 600px) {
