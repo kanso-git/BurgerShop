@@ -60,6 +60,7 @@ const loadOrdersList = () => async (dispatch, getState) => {
 
 const initiatePurchaseOrder = () => dispatch =>
   dispatch(initiatePurchaseAction());
+
 const placeOrder = orderData => async (dispatch, getState) => {
   try {
     const order = await placeOrdersAxios(orderData);
